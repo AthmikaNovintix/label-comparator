@@ -40,7 +40,8 @@ const Index = () => {
         formData.append("child_files", file);
       });
 
-      const response = await fetch("http://localhost:8000/api/compare", {
+      const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+      const response = await fetch(`${API_URL}/api/compare`, {
         method: "POST",
         body: formData,
       });

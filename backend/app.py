@@ -317,9 +317,11 @@ async def compare_labels(
                 return non_bg > threshold
 
             for base_sym in base_symbols_raw:
+                if is_box_image(base_sym["bbox"], base_features_df): continue
                 matches = [c for c in comp_symbols_raw if c["class"] == base_sym["class"]]
                 if matches:
                     for match in matches:
+                        if is_box_image(match["bbox"], comp_features_df): continue
                         c1 = get_center(base_sym["bbox"])
                         c2 = get_center(match["bbox"])
                         dist = math.dist(c1, c2)
@@ -334,6 +336,7 @@ async def compare_labels(
                     comp_symbols_final.append(missing_box)
                     
             for d in comp_symbols_raw:
+                if is_box_image(d["bbox"], comp_features_df): continue
                 if d["class"] not in [b["class"] for b in base_symbols_raw]:
                     added_box = d.copy()
                     added_box["label"] = "Added"
@@ -346,9 +349,9 @@ async def compare_labels(
             for box in ssim_boxes:
                 overlap = False
                 box_coords = [box[0], box[1], box[0]+box[2], box[1]+box[3]]
-                for sym in base_symbols:
+                for sym in base_symbols_raw:
                     if boxes_overlap(box_coords, sym["bbox"]): overlap = True; break
-                for sym in comp_symbols:
+                for sym in comp_symbols_raw:
                     if boxes_overlap(box_coords, sym["bbox"]): overlap = True; break
                 if not overlap:
                     text_diff_boxes.append(box)
@@ -365,7 +368,7 @@ async def compare_labels(
                 img_rows = features_df[features_df['Type'] == 'Image']
                 for _, row in img_rows.iterrows():
                     sym_box = row.get("Box")
-                    if hasattr(sym_box, '__len__') and len(sym_box) == 4 and boxes_overlap(box, sym_box):
+                    if hasattr(sym_box, '__len__') and len(sym_box) == 4 and boxes_overlap(box, sym_box, threshold=0.01):
                         return True
                 return False
 
@@ -395,16 +398,19 @@ async def compare_labels(
 
             added_text = []
             for box in actual_added_boxes:
+                if is_box_image(box, comp_features_df): continue
                 txt = ocr_crop(comp_aligned, box)
                 if txt and len(txt) > 2: added_text.append(txt)
 
             deleted_text = []
             for box in actual_deleted_boxes:
+                if is_box_image(box, base_features_df): continue
                 txt = ocr_crop(base_processed, box)
                 if txt and len(txt) > 2: deleted_text.append(txt)
 
             modified_text = []
             for box in changed_boxes:
+                if is_box_image(box, base_features_df) or is_box_image(box, comp_features_df): continue
                 txt_b = ocr_crop(base_processed, box)
                 txt_c = ocr_crop(comp_aligned, box)
                 if txt_b or txt_c:
@@ -416,13 +422,9 @@ async def compare_labels(
             modified_image_details = []
             modified_image_boxes = []
             
-            # Copy to avoid destructive pops for tracking Added/Deleted ONLY lists later
-            added_img_copy = added_img.copy()
-            deleted_img_copy = deleted_img.copy()
-            
-            while added_img_copy and deleted_img_copy:
-                a_img_val = added_img_copy.pop(0)
-                d_img_val = deleted_img_copy.pop(0)
+            while added_img and deleted_img:
+                a_img_val = added_img.pop(0)
+                d_img_val = deleted_img.pop(0)
                 modified_image_details.append(f"From: '{d_img_val}' ➔ To: '{a_img_val}'")
                 print(f"DEBUG: Processing Image Modification from {d_img_val} to {a_img_val}")
                 b_box = base_features_df[(base_features_df['Type'] == 'Image') & (base_features_df['Value'] == d_img_val)].iloc[0]['Box']
