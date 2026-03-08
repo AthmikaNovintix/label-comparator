@@ -1,0 +1,16 @@
+streamlit
+pandas
+numpy<2.0.0
+Pillow
+PyMuPDF
+opencv-contrib-python-headless
+scikit-image
+imutils
+ultralytics
+zxing-cpp
+rapidfuzz
+XlsxWriter
+pytesseract
+fastapi
+uvicorn
+python-multipart
