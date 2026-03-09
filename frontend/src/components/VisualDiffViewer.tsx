@@ -133,7 +133,7 @@ const VisualDiffViewer = ({
         <LegendItem color="#15803d" label="Added" />
         <LegendItem color="#de2626" label="Deleted" />
         <LegendItem color="#1e3d89" label="Modified" />
-        <LegendItem color="#f5a30a" label="Misplaced" />
+        <LegendItem color="#f5a30a" label="Repositioned" />
       </div>
     </div>
   );

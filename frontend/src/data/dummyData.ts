@@ -1,7 +1,7 @@
 export interface DiscrepancyItem {
   id: string;
   category: "Text" | "Symbol" | "Barcode" | "Image";
-  status: "Added" | "Deleted" | "Modified" | "Misplaced";
+  status: "Added" | "Deleted" | "Modified" | "Repositioned";
   value: string;
   oldText?: string;
   newText?: string;
@@ -39,11 +39,11 @@ export const childFeatures: FeatureItem[] = [
 
 export const discrepancies: DiscrepancyItem[] = [
   { id: "d1", category: "Barcode", status: "Modified", value: "DataMatrix LOT changed: LOT-2024-MX-0091 → LOT-2025-MX-0114", oldText: "LOT-2024-MX-0091", newText: "LOT-2025-MX-0114" },
-  { id: "d2", category: "Barcode", status: "Misplaced", value: "DataMatrix relocated from Bottom-Left to Top-Left" },
+  { id: "d2", category: "Barcode", status: "Repositioned", value: "DataMatrix relocated from Bottom-Left to Top-Left" },
   { id: "d3", category: "Text", status: "Modified", value: "'Single Use Only' truncated to 'Single Use'", oldText: "Sterile EO — Single Use Only", newText: "Sterile EO — Single Use" },
   { id: "d4", category: "Symbol", status: "Modified", value: "CE Notified Body ID changed: 0123 → 0197", oldText: "CE 0123", newText: "CE 0197" },
   { id: "d5", category: "Symbol", status: "Added", value: "UDI Symbol (ISO 15223-1) added at Bottom-Left" },
   { id: "d6", category: "Text", status: "Deleted", value: "Missing trailing text 'this device to sale by…' on Rx statement" },
   { id: "d7", category: "Image", status: "Modified", value: "Manufacturer logo scale reduced by ~8%", oldText: "Scale: 100%", newText: "Scale: 92%" },
-  { id: "d8", category: "Text", status: "Misplaced", value: "Storage instructions shifted 12px right from baseline" },
+  { id: "d8", category: "Text", status: "Repositioned", value: "Storage instructions shifted 12px right from baseline" },
 ];

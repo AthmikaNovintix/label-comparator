@@ -13,13 +13,13 @@ import {
 import { useState } from "react";
 import { type DiscrepancyItem, discrepancies } from "@/data/dummyData";
 
-type Status = "Deleted" | "Added" | "Modified" | "Misplaced";
+type Status = "Deleted" | "Added" | "Modified" | "Repositioned";
 
 const statusConfig: Record<Status, { icon: typeof Plus; label: string; borderClass: string; textClass: string }> = {
   Deleted: { icon: Trash2, label: "Deleted", borderClass: "border-l-status-deleted", textClass: "text-status-deleted" },
   Added: { icon: Plus, label: "Added", borderClass: "border-l-status-added", textClass: "text-status-added" },
   Modified: { icon: Pencil, label: "Modified", borderClass: "border-l-status-modified", textClass: "text-status-modified" },
-  Misplaced: { icon: ArrowRightLeft, label: "Misplaced", borderClass: "border-l-status-misplaced", textClass: "text-status-misplaced" },
+  Repositioned: { icon: ArrowRightLeft, label: "Repositioned", borderClass: "border-l-status-misplaced", textClass: "text-status-misplaced" },
 };
 
 const categoryIcons: Record<string, typeof Type> = {
@@ -29,17 +29,17 @@ const categoryIcons: Record<string, typeof Type> = {
   Symbol: Shield,
 };
 
-const statusOrder: Status[] = ["Deleted", "Added", "Modified", "Misplaced"];
+const statusOrder: Status[] = ["Deleted", "Added", "Modified", "Repositioned"];
 
 type Category = "Text" | "Symbol" | "Barcode" | "Image";
 
 function computeCounts(items: DiscrepancyItem[]) {
-  const byStatus: Record<Status, number> = { Deleted: 0, Added: 0, Modified: 0, Misplaced: 0 };
+  const byStatus: Record<Status, number> = { Deleted: 0, Added: 0, Modified: 0, Repositioned: 0 };
   const byStatusAndCategory: Record<Status, Record<Category, number>> = {
     Deleted: { Text: 0, Symbol: 0, Barcode: 0, Image: 0 },
     Added: { Text: 0, Symbol: 0, Barcode: 0, Image: 0 },
     Modified: { Text: 0, Symbol: 0, Barcode: 0, Image: 0 },
-    Misplaced: { Text: 0, Symbol: 0, Barcode: 0, Image: 0 },
+    Repositioned: { Text: 0, Symbol: 0, Barcode: 0, Image: 0 },
   };
   items.forEach((item) => {
     byStatus[item.status]++;
@@ -140,7 +140,7 @@ const DiscrepancyRow = ({ item, status }: { item: DiscrepancyItem; status: Statu
 
 // Status group with collapse
 const StatusGroup = ({ status, items }: { status: Status; items: DiscrepancyItem[] }) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const config = statusConfig[status];
   const Icon = config.icon;
 
@@ -169,7 +169,7 @@ const StatusGroup = ({ status, items }: { status: Status; items: DiscrepancyItem
 };
 
 const DiscrepancyDashboard = ({ items = discrepancies }: { items?: DiscrepancyItem[] }) => {
-  const grouped: Record<Status, DiscrepancyItem[]> = { Deleted: [], Added: [], Modified: [], Misplaced: [] };
+  const grouped: Record<Status, DiscrepancyItem[]> = { Deleted: [], Added: [], Modified: [], Repositioned: [] };
   items.forEach((item) => {
     if (grouped[item.status]) {
       grouped[item.status].push(item);

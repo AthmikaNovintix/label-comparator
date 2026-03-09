@@ -58,7 +58,7 @@ const Index = () => {
         const parsedItems: any[] = [];
         let idCounter = 1;
 
-        for (const status of ["Added", "Deleted", "Modified", "Misplaced"]) {
+        for (const status of ["Added", "Deleted", "Modified", "Repositioned"]) {
           if (apiDiscrepancies[status]) {
             apiDiscrepancies[status].forEach((item: any) => {
               let oldText;
@@ -116,8 +116,8 @@ const Index = () => {
             </h1>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
-            <button 
-              onClick={() => window.location.reload()} 
+            <button
+              onClick={() => window.location.reload()}
               className="flex items-center gap-2 bg-[#1e293b] hover:bg-[#334155] text-white px-3 py-2 rounded transition-colors mr-2 font-bold font-sans tracking-wide"
             >
               <RefreshCw className="h-4 w-4" /> REFRESH
