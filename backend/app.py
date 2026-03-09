@@ -14,9 +14,11 @@ import pytesseract
 import sys
 import os
 
-# Intelligently find Tesseract-OCR on Windows if not in PATH
+# Intelligently find Tesseract-OCR based on the OS
 if sys.platform == "win32":
+    # --- LOCAL DEVELOPMENT (WINDOWS) ---
     tess_paths = [
+        os.path.join(os.getcwd(), "Tesseract-OCR", "tesseract.exe"),
         r"C:\Program Files\Tesseract-OCR\tesseract.exe",
         r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
         os.path.expanduser(r"~\AppData\Local\Tesseract-OCR\tesseract.exe"),
@@ -26,6 +28,13 @@ if sys.platform == "win32":
         if os.path.exists(p):
             pytesseract.pytesseract.tesseract_cmd = p
             break
+else:
+    # --- CLOUD DEPLOYMENT (LINUX/MAC) ---
+    # In cloud environments, Tesseract is installed via the system package manager
+    pytesseract.pytesseract.tesseract_cmd = 'tesseract'
+
+    # Note: You must configure your cloud provider to install tesseract-ocr
+    # e.g., via a Dockerfile or a buildpack.
 
 import re
 import traceback
@@ -40,6 +49,41 @@ except ImportError as e:
     raise RuntimeError(f"Error loading external module: {e}")
 
 app = FastAPI(title="Label Comparator API", description="Production-ready FastAPI application for Label Comparator")
+
+@app.get("/api/health")
+async def health_check():
+    health_status = {
+        "status": "healthy",
+        "ocr": "unknown",
+        "4sym_model": "unknown",
+        "16sym_model": "unknown"
+    }
+
+    # Test OCR
+    try:
+        pytesseract.get_tesseract_version()
+        health_status["ocr"] = "working"
+    except Exception as e:
+        health_status["ocr"] = f"failed: {str(e)}"
+        health_status["status"] = "degraded"
+
+    # Test YOLO models
+    model_4sym_path = os.path.join("4sym_models", "best.pt")
+    model_16sym_path = os.path.join("16sym_models", "best.pt")
+
+    if os.path.exists(model_4sym_path):
+        health_status["4sym_model"] = "working"
+    else:
+        health_status["4sym_model"] = "missing"
+        health_status["status"] = "degraded"
+
+    if os.path.exists(model_16sym_path):
+        health_status["16sym_model"] = "working"
+    else:
+        health_status["16sym_model"] = "missing"
+        health_status["status"] = "degraded"
+
+    return JSONResponse(status_code=200 if health_status["status"] == "healthy" else 503, content=health_status)
 
 # Setup CORS for Next.js frontend
 app.add_middleware(

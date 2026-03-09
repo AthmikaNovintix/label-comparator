@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ScanLine, Activity } from "lucide-react";
 import Dropzone from "@/components/Dropzone";
 import VisualDiffViewer from "@/components/VisualDiffViewer";
+import { toast } from "sonner";
 import DataTables from "@/components/DataTables";
 
 const Index = () => {
@@ -15,7 +16,7 @@ const Index = () => {
 
   const handleRunAnalysis = async () => {
     if (baseFile.length === 0 || childFiles.length === 0) {
-      alert("Please upload both base and child labels.");
+      toast.error("Please upload both base and child labels.");
       return;
     }
     setLoading(true);
@@ -96,7 +97,7 @@ const Index = () => {
       setAnalysisRun(true);
     } catch (err) {
       console.error(err);
-      alert("Error running analysis. Check console for details.");
+      toast.error("Error running analysis. Check console for details.");
     } finally {
       clearInterval(progressInterval);
       setTimeout(() => setLoading(false), 500); // Give the 100% a moment to show
