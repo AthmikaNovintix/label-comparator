@@ -18,7 +18,7 @@ const Dropzone = ({ label, files, onFilesSelect, multiple = false }: DropzonePro
       const droppedFiles = Array.from(e.dataTransfer.files);
       if (droppedFiles.length > 0) {
           if (multiple) {
-              onFilesSelect(droppedFiles);
+              onFilesSelect([...files, ...droppedFiles]);
           } else {
               onFilesSelect([droppedFiles[0]]);
           }
@@ -31,7 +31,7 @@ const Dropzone = ({ label, files, onFilesSelect, multiple = false }: DropzonePro
     const selected = Array.from(e.target.files || []);
     if (selected.length > 0) {
         if (multiple) {
-            onFilesSelect(selected);
+            onFilesSelect([...files, ...selected]);
         } else {
             onFilesSelect([selected[0]]);
         }

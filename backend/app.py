@@ -305,6 +305,15 @@ async def compare_labels(
                 
             comp_symbols_final = []
             
+            def is_box_image(box, features_df):
+                if features_df.empty: return False
+                img_rows = features_df[features_df['Type'] == 'Image']
+                for _, row in img_rows.iterrows():
+                    sym_box = row.get("Box")
+                    if hasattr(sym_box, '__len__') and len(sym_box) == 4 and boxes_overlap(box, sym_box, threshold=0.01):
+                        return True
+                return False
+
             def region_has_symbol(image, bbox, threshold=15):
                 x1, y1, x2, y2 = map(int, bbox)
                 crop = np.array(image)[y1:y2, x1:x2]
@@ -362,15 +371,6 @@ async def compare_labels(
 
             base_gray = cv2.cvtColor(np.array(base_processed), cv2.COLOR_RGB2GRAY)
             child_gray = cv2.cvtColor(np.array(comp_aligned), cv2.COLOR_RGB2GRAY)
-
-            def is_box_image(box, features_df):
-                if features_df.empty: return False
-                img_rows = features_df[features_df['Type'] == 'Image']
-                for _, row in img_rows.iterrows():
-                    sym_box = row.get("Box")
-                    if hasattr(sym_box, '__len__') and len(sym_box) == 4 and boxes_overlap(box, sym_box, threshold=0.01):
-                        return True
-                return False
 
             for (x, y, w, h) in text_diff_boxes:
                 box_coords = [x, y, x+w, y+h]
