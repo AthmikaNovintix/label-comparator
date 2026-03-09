@@ -177,12 +177,21 @@ const DiscrepancyDashboard = ({ items = discrepancies }: { items?: DiscrepancyIt
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <InspectionSummary items={items} />
-      <div>
-        {statusOrder.map((status) => (
-          <StatusGroup key={status} status={status} items={grouped[status]} />
-        ))}
+      <div className="bg-card border border-border">
+        <div className="bg-secondary/50 px-4 py-2 border-b border-border">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Inspection Details</span>
+        </div>
+        <div className="px-4 bg-card divide-y divide-border">
+          {statusOrder.map((status) => 
+            grouped[status].length > 0 ? (
+              <div key={status} className="py-3">
+                <StatusGroup status={status} items={grouped[status]} />
+              </div>
+            ) : null
+          )}
+        </div>
       </div>
     </div>
   );

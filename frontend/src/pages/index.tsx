@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScanLine, Activity } from "lucide-react";
+import { ScanLine, Activity, RefreshCw } from "lucide-react";
 import Dropzone from "@/components/Dropzone";
 import VisualDiffViewer from "@/components/VisualDiffViewer";
 import { toast } from "sonner";
@@ -116,6 +116,12 @@ const Index = () => {
             </h1>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+            <button 
+              onClick={() => window.location.reload()} 
+              className="flex items-center gap-2 bg-[#1e293b] hover:bg-[#334155] text-white px-3 py-2 rounded transition-colors mr-2 font-bold font-sans tracking-wide"
+            >
+              <RefreshCw className="h-4 w-4" /> REFRESH
+            </button>
             <Activity className="h-3.5 w-3.5" />
             <span>System Operational</span>
           </div>

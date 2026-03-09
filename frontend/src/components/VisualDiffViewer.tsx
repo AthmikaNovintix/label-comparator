@@ -82,7 +82,7 @@ const VisualDiffViewer = ({
   return (
     <div>
       {/* Toolbar */}
-      <div className="flex items-center justify-between border border-border bg-card px-4 py-2 mb-0">
+      <div className="flex items-center justify-between border border-border bg-card px-4 py-2 mb-4">
         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           Visual Diff Viewer
         </span>
@@ -100,8 +100,8 @@ const VisualDiffViewer = ({
       </div>
 
       {/* Split view */}
-      <div className="grid grid-cols-2 border border-t-0 border-border">
-        <div className="border-r border-border">
+      <div className="grid grid-cols-2 gap-6">
+        <div className="border border-border bg-card">
           <div className="bg-card px-3 py-1.5 border-b border-border">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Base Label</span>
           </div>
@@ -113,7 +113,7 @@ const VisualDiffViewer = ({
             </TransformWrapper>
           </div>
         </div>
-        <div>
+        <div className="border border-border bg-card">
           <div className="bg-card px-3 py-1.5 border-b border-border">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Child Label</span>
           </div>
@@ -128,7 +128,7 @@ const VisualDiffViewer = ({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-6 border border-t-0 border-border bg-card px-4 py-2">
+      <div className="flex items-center gap-6 border border-border bg-card px-4 py-2 mt-4">
         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mr-2">Legend:</span>
         <LegendItem color="#15803d" label="Added" />
         <LegendItem color="#de2626" label="Deleted" />
